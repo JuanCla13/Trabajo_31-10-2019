@@ -1,0 +1,57 @@
+---
+title: "Iris K-Means Clustering"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    social: menu
+    source_code: embed
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+library(datasets)
+data("airquality")
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+selectInput('xcol', 'X Variable', names(airquality))
+    
+selectInput('ycol', 'Y Variable', names(airquality),
+                selected=names(airquality)[[2]])
+    
+
+```
+
+Column
+-----------------------------------------------------------------------
+
+### K Means
+
+```{r}
+
+
+# Combine the selected variables into a new data frame
+selectedData <- reactive({
+  airquality[, c(input$xcol, input$ycol)]
+  
+})
+
+a <- reactive({
+  airquality[, c(input$ycol,input$xcol)]
+  })
+#b <- reactive(airquality[, input$xcol])
+
+
+renderPlot({
+  par(mar = c(5.1, 4.1, 0, 1))
+  plot(selectedData(), col = "blue",cex =1.5, lwd = 1.8)
+  lm.datos <- lm(a())
+        abline(lm.datos, col = "red",lwd = 2)
+ 
+})
+```
